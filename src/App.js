@@ -1,4 +1,4 @@
-import{injected}from"./components/wallet/connecters"
+import{injected}from"./components/wallet/connectors"
 import{useWeb3React}from"@web3-react/core"
 import{Web3ReactProvider,getWeb3ReactConttext}from"@web3-react/core"
 import{Web3Provider}from"@ethersproject/providers"
@@ -8,34 +8,34 @@ import React from 'react'
 
 export default function App(){
 
-const InteractiveArea=()=>{
-  const context = useWeb3React()
-  const {chainId, provider, active, activate, deactivate} = context
-  
-  const connectwallet=()=>{
-    activate(injected)
+  const InteractiveArea = () => {
+    const context = useWeb3React()
+    const {chainId, provider, account, active, library, activate, deactivate} = context
+    //const WalletAddress = address
+    
+    const connectwallet = () => {
+      activate(injected)
+    }
+    const disconnectWallet = () => {
+      deactivate(injected)
+    }
+    return(
+      <div>
+        <button onClick={() => {activate (injected)}}>Connect Wallet</button>
+        {active ? (<div>connected: {account} </div>): (<div>Not connected</div>)}
+        <button onClick = {() => {deactivate()}} > Disconnect Wallet </button>
+      </div>
+    )
   }
-
-  const disconnectWallet=()=>{
-    deactivate(injected)
+  function getLibraryf (provider) {
+    const library = new Web3Provider(provider);
+    library.pollingInterval = 12000;
+    return library;
   }
-
-  return(
-    <div>
-      <button>connect</button>
-      <div>concted Adrress:{WalletAddress}</div>
-      <button>Disconnect</button>
-    </div>
+  return (
+    <Web3ReactProvider getLibrary = {getLibraryf} >
+      <InteractiveArea />
+    </Web3ReactProvider>
   )
-}
-function getLibraryf(provider) {
-  const library = new Web3Provider(provider);
-  library.pollingInterval = 12000;
-  return library;
-}
-return (
-  <Web3ReactProvider getLibrary={getLibraryf}>
-    <InteractiveArea />
-  </Web3ReactProvider>
-)
+  
 }
